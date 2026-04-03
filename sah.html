@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novice Food Website</title>
+    <style>
+        body {
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+            background: #fef9e6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #c0392b;
+        }
+        .subtitle {
+            text-align: center;
+            color: #4a4a4a;
+        }
+        .food-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            width: 260px;
+            padding: 16px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .food-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            background-color: #f0f0f0;
+        }
+        .food-name {
+            margin: 0 0 10px 0;
+            color: #e67e22;
+            border-left: 4px solid #e67e22;
+            padding-left: 10px;
+        }
+        .ingredients-title {
+            font-weight: bold;
+            margin: 10px 0 5px 0;
+            font-size: 0.9rem;
+        }
+        .ingredient-list {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 0.85rem;
+            color: #2c3e50;
+        }
+        .ingredient-list li {
+            margin-bottom: 4px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Novice Food List</h1>
+        <p class="subtitle">Foods and ingredients from dummy JSON</p>
+        <div id="foodGrid" class="food-grid"></div>
+    </div>
+
+    <script>
+        async function fetchFoods() {
+            try {
+                const response = await fetch('https://dummyjson.com/recipes');
+                const data = await response.json();
+                const recipes = data.recipes || [];
+                displayFoods(recipes);
+            } catch (error) {
+                document.getElementById('foodGrid').innerHTML = '<p class="error">Failed to load foods. Try again later.</p>';
+            }
+        }
+
+        function displayFoods(recipes) {
+            const container = document.getElementById('foodGrid');
+            container.innerHTML = '';
+
+            recipes.slice(0, 24).forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const image = document.createElement('img');
+                image.className = 'food-image';
+                const imageUrl = recipe.image || 'https://dummyjson.com/image/260x160/cccccc/ffffff?text=No+Image';
+                image.src = imageUrl;
+                image.alt = recipe.name;
+                image.onerror = function() {
+                    this.src = 'https://dummyjson.com/image/260x160/cccccc/ffffff?text=Food';
+                };
+
+                const title = document.createElement('h3');
+                title.className = 'food-name';
+                title.textContent = recipe.name;
+
+                const ingredientsTitle = document.createElement('p');
+                ingredientsTitle.className = 'ingredients-title';
+                ingredientsTitle.textContent = 'Ingredients:';
+
+                const ingredientList = document.createElement('ul');
+                ingredientList.className = 'ingredient-list';
+
+                const ingredients = recipe.ingredients || [];
+                ingredients.slice(0, 6).forEach(ing => {
+                    const li = document.createElement('li');
+                    li.textContent = ing;
+                    ingredientList.appendChild(li);
+                });
+
+                if (ingredients.length > 6) {
+                    const extra = document.createElement('li');
+                    extra.textContent = '+ ' + (ingredients.length - 6) + ' more';
+                    extra.style.fontStyle = 'italic';
+                    ingredientList.appendChild(extra);
+                }
+
+                card.appendChild(image);
+                card.appendChild(title);
+                card.appendChild(ingredientsTitle);
+                card.appendChild(ingredientList);
+                container.appendChild(card);
+            });
+        }
+
+        fetchFoods();
+    </script>
+</body>
+</html>
