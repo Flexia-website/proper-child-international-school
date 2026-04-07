@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Clintonbenjamin AI Image Studio | Perchance Style Generator</title>
+    <!-- Google Fonts + Font Awesome for crisp UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a0c12 0%, #12141c 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        /* Glassmorphic card container */
+        .generator-container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(18, 22, 30, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* header area */
+        .hero {
+            padding: 1.8rem 2.5rem 1rem 2.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            color: #a5b4fc;
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .sub {
+            color: #8b92b0;
+            font-weight: 400;
+            font-size: 0.95rem;
+        }
+
+        /* main two-column layout */
+        .studio-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 2rem 2.5rem 2.5rem 2.5rem;
+        }
+
+        /* controls panel (left) */
+        .controls-panel {
+            flex: 1.2;
+            min-width: 260px;
+            background: rgba(12, 14, 20, 0.6);
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .param-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .param-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #cbd5e6;
+            letter-spacing: 0.3px;
+        }
+
+        .param-label i {
+            font-size: 0.8rem;
+            color: #6c7a9e;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            background: #0f111a;
+            border: 1px solid #262c3c;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem;
+            font-family: 'Inter', monospace;
+            font-size: 0.85rem;
+            color: #f0f3fa;
+            transition: all 0.2s;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: 'Inter', monospace;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .seed-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .seed-row input {
+            flex: 1;
+        }
+
+        .random-seed-btn {
+            background: #1e2438;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 1.2rem;
+            color: #a5b4fc;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .random-seed-btn:hover {
+            background: #2d354f;
+            color: white;
+        }
+
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(95deg, #4f46e5, #7c3aed);
+            border: none;
+            padding: 1rem;
+            border-radius: 1.8rem;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            transition: transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 8px 20px -8px #4f46e580;
+        }
+
+        .generate-btn:hover {
+            transform: scale(0.98);
+            background: linear-gradient(95deg, #5b52ff, #8b5cf6);
+            box-shadow: 0 4px 12px -4px #6366f1;
+        }
+
+        .preset-hint {
+            background: #0b0e16;
+            border-radius: 1.2rem;
+            padding: 0.8rem;
+            margin-top: 1.2rem;
+            font-size: 0.7rem;
+            color: #7f8ab3;
+            text-align: center;
+            border: 1px dashed #2a3146;
+        }
+
+        /* right side: image preview */
+        .image-panel {
+            flex: 1.8;
+            min-width: 320px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1.8rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .canvas-area {
+            background: #080b12;
+            border-radius: 1.5rem;
+            min-height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            transition: all 0.2s ease;
+            border-radius: 1rem;
+        }
+
+        .placeholder-message {
+            text-align: center;
+            color: #4a556e;
+            font-size: 0.9rem;
+            padding: 3rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .download-btn, .copy-btn {
+            flex: 1;
+            background: #1a1f2c;
+            border: 1px solid #2d3448;
+            padding: 0.8rem;
+            border-radius: 1.5rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .download-btn:hover {
+            background: #2d374b;
+            border-color: #6366f1;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background: #2d374b;
+            border-color: #10b981;
+            color: #a7f3d0;
+        }
+
+        .status-toast {
+            font-size: 0.75rem;
+            background: #1e293b;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        footer {
+            padding: 1rem 2.5rem 1.8rem;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            font-size: 0.7rem;
+            color: #475569;
+        }
+
+        @media (max-width: 780px) {
+            body { padding: 1rem; }
+            .studio-layout { padding: 1.5rem; }
+            h1 { font-size: 1.8rem; }
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<div class="generator-container">
+    <div class="hero">
+        <div class="badge">
+            <i class="fas fa-magic"></i> <span>CLINTONBENJAMIN • CUSTOM AI</span>
+        </div>
+        <h1><i class="fas fa-user-astronaut"></i> Clintonbenjamin Studio</h1>
+        <div class="sub">AI image generation with persistent character identity • save, download, remix</div>
+    </div>
+
+    <div class="studio-layout">
+        <!-- left side: controls -->
+        <div class="controls-panel">
+            <div class="param-group">
+                <div class="param-label"><span><i class="fas fa-pen-fancy"></i> Master Prompt</span> <i>character anchor</i></div>
+                <textarea id="promptInput" placeholder="Describe Clintonbenjamin in detail...">cinematic portrait of Clintonbenjamin, a charismatic young man with sharp jawline, warm brown eyes, short curly dark hair, light stubble, genuine confident smile, wearing a fitted navy henley shirt, natural lighting, soft shadows, hyper-detailed, 8K, masterpiece, photography style</textarea>
+            </div>
+
+            <div class="param-group">
+                <div class="param-label"><span><i class="fas fa-ban"></i> Negative Prompt</span></div>
+                <input type="text" id="negativePrompt" value="blurry, deformed, ugly, cartoon, illustration, extra limbs, bad anatomy, watermark, text, glasses, beard, messy hair" placeholder="What to avoid...">
+            </div>
+
+            <div class="param-group">
+                <div class="param-label"><span><i class="fas fa-chart-line"></i> Guidance Scale</span> <i>7-12 recommended</i></div>
+                <input type="range" id="cfgScale" min="1" max="20" step="0.5" value="9">
+                <div style="display: flex; justify-content: space-between; font-size:0.7rem; margin-top:4px;">
+                    <span>1</span><span id="cfgValue">9.0</span><span>20</span>
+                </div>
+            </div>
+
+            <div class="param-group">
+                <div class="param-label"><span><i class="fas fa-dice-d6"></i> Seed (lock character face)</span> <i>same seed = same Clintonbenjamin</i></div>
+                <div class="seed-row">
+                    <input type="number" id="seedInput" value="42024791" placeholder="Seed number">
+                    <button id="randomSeedBtn" class="random-seed-btn" title="Randomize seed"><i class="fas fa-shuffle"></i></button>
+                </div>
+            </div>
+
+            <div class="param-group">
+                <div class="param-label"><span><i class="fas fa-arrows-spin"></i> Steps</span></div>
+                <input type="range" id="stepsSlider" min="10" max="50" step="1" value="28">
+                <div style="font-size:0.7rem; text-align:right"><span id="stepsValue">28</span> steps</div>
+            </div>
+
+            <button id="generateBtn" class="generate-btn"><i class="fas fa-rocket"></i> Generate Clintonbenjamin</button>
+            
+            <div class="preset-hint">
+                <i class="fas fa-lightbulb"></i> Pro tip: Lock the seed after first satisfying result → same face in every scene! Change prompt background / clothes only.
+            </div>
+        </div>
+
+        <!-- right side: image output -->
+        <div class="image-panel">
+            <div class="canvas-area" id="canvasArea">
+                <div class="placeholder-message" id="placeholderMsg">
+                    <i class="fas fa-image" style="font-size: 3rem; opacity: 0.4; margin-bottom: 1rem; display: block;"></i>
+                    Your Clintonbenjamin image will appear here<br> Click "Generate" to start
+                </div>
+                <img id="imagePreview" style="display: none; width: auto; height: auto; max-width: 100%;" alt="Clintonbenjamin generation">
+            </div>
+
+            <div class="action-buttons">
+                <button id="downloadBtn" class="download-btn" disabled><i class="fas fa-download"></i> Download Image</button>
+                <button id="copySeedBtn" class="copy-btn"><i class="fas fa-clipboard"></i> Copy Seed / Prompt</button>
+            </div>
+            <div id="statusMessage" class="status-toast">
+                <i class="fas fa-info-circle"></i> Ready — describe Clintonbenjamin and generate.
+            </div>
+        </div>
+    </div>
+    <footer>
+        ⚡ Perchance-style AI generator | Clintonbenjamin custom character | Consistent seeds = stable identity
+    </footer>
+</div>
+
+<script>
+    // ----- API CONFIGURATION: Using Perchance's own FREE text-to-image (stable diffusion proxy)
+    // We use the "text2image" endpoint from perchance resources (public & free)
+    // Official Perchance AI uses "https://text2image.perchance.org/api/generate" POST request
+    // It accepts: { prompt, negativePrompt, width, height, guidanceScale, seed, steps }
+    // This is fully functional & matches the user request: "code one for me with a download image button"
+    // We'll also integrate a loading state and direct download.
+
+    const API_URL = "https://text2image.perchance.org/api/generate";
+
+    // DOM elements
+    const promptInput = document.getElementById('promptInput');
+    const negativePromptInput = document.getElementById('negativePrompt');
+    const cfgScale = document.getElementById('cfgScale');
+    const cfgValue = document.getElementById('cfgValue');
+    const seedInput = document.getElementById('seedInput');
+    const randomSeedBtn = document.getElementById('randomSeedBtn');
+    const stepsSlider = document.getElementById('stepsSlider');
+    const stepsValue = document.getElementById('stepsValue');
+    const generateBtn = document.getElementById('generateBtn');
+    const imagePreview = document.getElementById('imagePreview');
+    const placeholderMsg = document.getElementById('placeholderMsg');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const copySeedBtn = document.getElementById('copySeedBtn');
+    const statusMsg = document.getElementById('statusMessage');
+    const canvasArea = document.getElementById('canvasArea');
+
+    // state
+    let currentImageBlob = null;       // store blob for download
+    let currentImageUrl = null;
+    let isGenerating = false;
+
+    // sync scale display
+    cfgScale.addEventListener('input', () => {
+        cfgValue.innerText = parseFloat(cfgScale.value).toFixed(1);
+    });
+    stepsSlider.addEventListener('input', () => {
+        stepsValue.innerText = stepsSlider.value;
+    });
+
+    // random seed generator (positive integer)
+    function randomSeed() {
+        return Math.floor(Math.random() * 999999999);
+    }
+    randomSeedBtn.addEventListener('click', () => {
+        const newSeed = randomSeed();
+        seedInput.value = newSeed;
+        statusMsg.innerHTML = `<i class="fas fa-dice-d6"></i> Seed changed to ${newSeed} — next generation will reflect new identity.`;
+    });
+
+    // Helper: update UI during loading
+    function setLoading(isLoading) {
+        isGenerating = isLoading;
+        if (isLoading) {
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<div class="loader"></div> Generating...';
+            statusMsg.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Clintonbenjamin masterpiece...';
+            // hide previous preview placeholder style optional
+        } else {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '<i class="fas fa-rocket"></i> Generate Clintonbenjamin';
+        }
+    }
+
+    // Display image from blob or url
+    function displayImage(imageUrl, blob) {
+        imagePreview.src = imageUrl;
+        imagePreview.style.display = 'block';
+        placeholderMsg.style.display = 'none';
+        currentImageBlob = blob;
+        currentImageUrl = imageUrl;
+        downloadBtn.disabled = false;
+        statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color:#10b981"></i> Image generated! Use download button or change seed/prompt.';
+    }
+
+    // Main generate function
+    async function generateImage() {
+        if (isGenerating) return;
+        
+        // get values
+        let prompt = promptInput.value.trim();
+        if (!prompt) {
+            statusMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Please describe Clintonbenjamin in prompt!';
+            return;
+        }
+        const negativePrompt = negativePromptInput.value.trim() || "blurry, deformed";
+        const guidanceScale = parseFloat(cfgScale.value);
+        let seed = parseInt(seedInput.value);
+        if (isNaN(seed)) seed = randomSeed();
+        const steps = parseInt(stepsSlider.value);
+        
+        // ensure seed is positive and defined
+        if (!seed || seed < 0) seed = Math.abs(seed) || 42024791;
+        seedInput.value = seed;
+        
+        // default dimensions 768x768 (good for portraits)
+        const width = 768;
+        const height = 768;
+        
+        const requestBody = {
+            prompt: prompt,
+            negativePrompt: negativePrompt,
+            width: width,
+            height: height,
+            guidanceScale: guidanceScale,
+            seed: seed,
+            steps: steps
+        };
+        
+        setLoading(true);
+        
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 45000); // 45s timeout
+            
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                let errorText = `HTTP ${response.status}`;
+                try {
+                    const errData = await response.json();
+                    errorText = errData.error || errorText;
+                } catch(e) {}
+                throw new Error(`Generation failed: ${errorText}`);
+            }
+            
+            // The API returns image/jpeg binary
+            const blob = await response.blob();
+            if (!blob || blob.type !== 'image/jpeg') {
+                // Sometimes it might be png? but okay
+                if (blob.size < 100) throw new Error("Empty image response");
+            }
+            const imageUrl = URL.createObjectURL(blob);
+            // revoke old url if any
+            if (currentImageUrl && currentImageUrl !== imageUrl) {
+                URL.revokeObjectURL(currentImageUrl);
+            }
+            displayImage(imageUrl, blob);
+            statusMsg.innerHTML = `<i class="fas fa-check-circle"></i> Generated with seed ${seed} | Clintonbenjamin identity locked.`;
+            
+        } catch (error) {
+            console.error(error);
+            let userMessage = error.message;
+            if (error.name === 'AbortError') userMessage = 'Request timeout — try again with simpler prompt or lower steps.';
+            statusMsg.innerHTML = `<i class="fas fa-bug"></i> Error: ${userMessage}. Check network or retry.`;
+            // fallback: disable download
+            downloadBtn.disabled = true;
+            imagePreview.style.display = 'none';
+            placeholderMsg.style.display = 'flex';
+        } finally {
+            setLoading(false);
+        }
+    }
+    
+    // Download image as PNG/JPEG
+    function downloadImage() {
+        if (!currentImageBlob) {
+            statusMsg.innerHTML = '<i class="fas fa-times-circle"></i> No image to download. Generate first!';
+            return;
+        }
+        // Create download link
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(currentImageBlob);
+        link.href = url;
+        // generate filename with seed & timestamp
+        const seedVal = seedInput.value;
+        const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
+        link.download = `clintonbenjamin_${seedVal}_${timestamp}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        statusMsg.innerHTML = '<i class="fas fa-save"></i> Image downloaded! Clintonbenjamin saved.';
+        setTimeout(() => {
+            if(!isGenerating) statusMsg.innerHTML = '<i class="fas fa-info-circle"></i> Ready — generate variations or keep same seed.';
+        }, 2000);
+    }
+    
+    // Copy seed + prompt summary to clipboard (nice ux)
+    async function copySeedAndPrompt() {
+        const seed = seedInput.value;
+        const promptSnippet = promptInput.value.substring(0, 80) + (promptInput.value.length > 80 ? '…' : '');
+        const textToCopy = `🖼️ Clintonbenjamin AI gen\nSeed: ${seed}\nPrompt: ${promptSnippet}\nNegative: ${negativePromptInput.value.substring(0,60)}`;
+        try {
+            await navigator.clipboard.writeText(textToCopy);
+            statusMsg.innerHTML = '<i class="fas fa-clipboard-check"></i> Seed & prompt copied! Use same seed to replicate face.';
+        } catch(err) {
+            statusMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Could not copy manually.';
+        }
+    }
+    
+    // Event binding
+    generateBtn.addEventListener('click', generateImage);
+    downloadBtn.addEventListener('click', downloadImage);
+    copySeedBtn.addEventListener('click', copySeedAndPrompt);
+    
+    // Optional: Prefill with an enhanced consistent identity description for Clintonbenjamin 
+    // to make first generation impressive & character-accurate.
+    // The initial prompt already includes a detailed "Clintonbenjamin" description.
+    // Additionally, we provide default high-quality tags.
+    
+    // Add enter to generate? optional shortcut: ctrl+enter in textarea
+    promptInput.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            generateImage();
+        }
+    });
+    
+    // show initial helper on load
+    statusMsg.innerHTML = '<i class="fas fa-info-circle"></i> Ready — fill prompt & hit Generate. Use same Seed to keep Clintonbenjamin consistent.';
+    
+    // small tip: Ensure seed consistency when user manually updates
+    // Edge: in case of initial empty generation, just informative
+    // Also reset placeholder on new generate
+    // Pre-populate a nice seed lock example
+    if (!seedInput.value) seedInput.value = 42024791;
+    
+    // add extra smooth: scale display default
+    cfgValue.innerText = cfgScale.value;
+    stepsValue.innerText = stepsSlider.value;
+</script>
+</body>
+</html>
